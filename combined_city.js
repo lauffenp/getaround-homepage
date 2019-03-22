@@ -4,7 +4,6 @@
       let start = moment();
       let end = moment();
       const now = moment();
-      // const now =moment('3/13/2019 8:43');
       const MOMENT_FORMAT = 'YYYY-MM-DDTHH:mm:ss.SSS'
       const SHORT_FORMAT = 'YYYY-MM-DD'
       // initialize both datepickers
