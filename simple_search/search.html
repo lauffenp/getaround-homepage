@@ -6,11 +6,68 @@
   <link href="https://cdnjs.cloudflare.com/ajax/libs/jqueryui/1.12.1/jquery-ui.css" rel="stylesheet"></link>
   <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/timepicker@1.11.14/jquery.timepicker.min.css"></link>
   <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css"></link>
-  <link href="./style.css" rel="stylesheet"></link>
+  <style>
+  .simple-search button.btn {
+    background-color: #CC33CC;
+    color: #ffffff;
+    height: 47px;
+    border-radius: 4px;
+    align-self: center;
+    height: 47px;
+    font-size: 16px;
+    margin-left: 20px;
+    max-width: 140px;
+  }
+
+  .simple-search button.btn:hover {
+    background: #800080;
+  }
+
+  .simple-search .col-10 {
+    padding-right: 0;
+    max-width: 300px;
+    padding-left: 0;
+  }
+
+  .simple-search input {
+    width: 100%;
+    height: 47px;
+    padding-left: 30px;
+    font-size: 18px;
+    background: #FFFFFF;
+    border: 1px solid #666666;
+    box-sizing: border-box;
+    border-radius: 4px;
+  }
+
+  .simple-search button.d-md-none {
+    max-width: 47px;
+    height: 47px;
+    margin-left: 9px;
+  }
+
+  .simple-search img {
+    position: absolute;
+    top: 12px;
+    left: 8px;
+  }
+
+  .simple-search {
+    background-color: #fff;
+    padding-left: 0;
+  }
+
+  </style>
   <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.7.2/css/all.css" integrity="sha384-fnmOCqbTlWIlj8LyTjo7mOUStjsKC4pOpQbqyi7RrhN7udi9RwhKkMHpvLbHG9Sr" crossorigin="anonymous">
-  <div class="simple-search d-inline-flex container col-12 col-md-6">
-    <div class="col-8">
-      <input id="search-place" class="search" placeholder="San Diego, CA" />
+  <div class="simple-search d-inline-flex container col-12">
+    <div class="col-10 col-md-8">
+      <input id="search-place" class="search" placeholder="San Diego, CA" >
+        <img
+          src='https://uploads-ssl.webflow.com/5c8169ea777303b6b1131a15/5c94b9fbec90902a41c8722f_map_marker.svg'
+          height="23px"
+          width="auto"
+        />
+      </input>
     </div>
     <button id="submit-search" class="btn search-inputs col-4 d-none d-md-block">Search for cars</button>
     <button id="submit-search" class="btn search-inputs col-2 d-md-none d-sm-block"><i class="fas fa-search"></i></button>
@@ -26,96 +83,95 @@
   <script src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.24.0/moment.js"></script>
   <script src="https://cdn.jsdelivr.net/npm/timepicker@1.11.14/jquery.timepicker.min.js"></script>
   <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js" integrity="sha384-JjSmVgyd0p3pXB1rRibZUAYoIIy6OrQ6VrjIEaFf/nJGzIxFDsf4x0xIM+B07jRM" crossorigin="anonymous"></script>
-  <script type="text/javascript">
+  <script type="text/javascript" src="../combined_city.js">
 
-    $(document).ready(function() {
-      // add default viewport
-      this.viewport;
-
-      this.urlPort = window.location.port;
-      let urlHostName = window.location.hostname;
-      if (urlHostName == "w.getaround.com" || urlHostName == "getaround.webflow.io" || !urlHostName || urlHostName === '' ) {
-          urlHostName = "www.getaround.com"
-      }
-      const pageHost = urlHostName;
-      if (this.urlPort !== "") {
-          this.urlHostName += ":";
-      }
-
-      // google maps stuff
-      const input = $('#search-place')[0];
-      const autocomplete = new google.maps.places.Autocomplete(input);
-
-      this.placesChangedHandler = () => {
-          var place = autocomplete.getPlace();
-          if (!place.geometry) {
-            // User entered the name of a Place that was not suggested and
-            // pressed the Enter key, or the Place Details request failed.
-            window.alert("No details available for input: '" + place.name + "'");
-          } else {
-            if (place.geometry.viewport) {
-              const vp = place.geometry.viewport;
-              this.viewport = `${vp.ma.j},${vp.ga.j},${vp.ma.l},${vp.ga.l}`;
-            } else {
-              window.alert("No details available for input: '" + place.name + "'");
-            }
-          }
-        }
-
-      autocomplete.setFields(['address_components', 'geometry','name']);
-      autocomplete.addListener('place_changed', this.placesChangedHandler);
-
-      this.getSearchParams = () => {
-        const use = 'use=CARSHARE';
-        const viewport = `viewport=${this.viewport}`;
-        return `${use}&${viewport}`;
-      }
-      this.redirectToSearch = e => {
-        e.preventDefault();
-        const searchParams = this.getSearchParams();
-
-        window.location.href = `https://www.getaround.com/search?${searchParams}`;
-      }
-      $("#submit-search").on("click", this.redirectToSearch);
-
-      let geocoder;
-
-      const getLocation = () => {
-        if (navigator.geolocation) {
-          navigator.geolocation.getCurrentPosition(showPosition);
-        }
-      }
-
-      const showPosition = position => {
-        codeLatLng(position.coords.latitude, position.coords.longitude);
-      }
-
-      const codeLatLng = (lat, lng) => {
-        var latlng = new google.maps.LatLng(lat, lng);
-        geocoder.geocode({
-          'latLng': latlng
-        }, function (results, status) {
-          if (status === google.maps.GeocoderStatus.OK) {
-            if (results[1]) {
-              autocomplete.set("place", results[1])
-              $('#search-place').val(results[1].formatted_address);
-              $('#search-place').focus();
-              setTimeout(() => $('#place').blur(), 1000);
-            } else {
-              // no results found at current location
-            }
-          } else {
-            // browser did not allow location services
-          }
-        });
-      }
-
-      const initialize = () => {
-        geocoder = new google.maps.Geocoder();
-        getLocation();
-      }
-      initialize();
-    });
+    // $(document).ready(function() {
+    //   // add default viewport
+    //   this.viewport;
+    //
+    //   this.urlPort = window.location.port;
+    //   let urlHostName = window.location.hostname;
+    //   if (urlHostName == "w.getaround.com" || urlHostName == "getaround.webflow.io" || !urlHostName || urlHostName === '' ) {
+    //       urlHostName = "www.getaround.com"
+    //   }
+    //   const pageHost = urlHostName;
+    //   if (this.urlPort !== "") {
+    //       this.urlHostName += ":";
+    //   }
+    //
+    //   // google maps stuff
+    //   const input = $('#search-place')[0];
+    //   const autocomplete = new google.maps.places.Autocomplete(input);
+    //
+    //   this.placesChangedHandler = () => {
+    //       var place = autocomplete.getPlace();
+    //       if (!place.geometry) {
+    //         // User entered the name of a Place that was not suggested and
+    //         // pressed the Enter key, or the Place Details request failed.
+    //         window.alert("No details available for input: '" + place.name + "'");
+    //       } else {
+    //         if (place.geometry.viewport) {
+    //           const vp = place.geometry.viewport;
+    //           this.viewport = `${vp.ma.j},${vp.ga.j},${vp.ma.l},${vp.ga.l}`;
+    //         } else {
+    //           window.alert("No details available for input: '" + place.name + "'");
+    //         }
+    //       }
+    //     }
+    //
+    //   autocomplete.setFields(['address_components', 'geometry','name']);
+    //   autocomplete.addListener('place_changed', this.placesChangedHandler);
+    //
+    //   this.getSearchParams = () => {
+    //     const use = 'use=CARSHARE';
+    //     const viewport = `viewport=${this.viewport}`;
+    //     return `${use}&${viewport}`;
+    //   }
+    //   this.redirectToSearch = e => {
+    //     e.preventDefault();
+    //     const searchParams = this.getSearchParams();
+    //     window.location.href = `https://www.getaround.com/search?${searchParams}`;
+    //   }
+    //   $("#submit-search").on("click", this.redirectToSearch);
+    //
+    //   let geocoder;
+    //
+    //   const getLocation = () => {
+    //     if (navigator.geolocation) {
+    //       navigator.geolocation.getCurrentPosition(showPosition);
+    //     }
+    //   }
+    //
+    //   const showPosition = position => {
+    //     codeLatLng(position.coords.latitude, position.coords.longitude);
+    //   }
+    //
+    //   const codeLatLng = (lat, lng) => {
+    //     var latlng = new google.maps.LatLng(lat, lng);
+    //     geocoder.geocode({
+    //       'latLng': latlng
+    //     }, function (results, status) {
+    //       if (status === google.maps.GeocoderStatus.OK) {
+    //         if (results[1]) {
+    //           autocomplete.set("place", results[1])
+    //           $('#search-place').val(results[1].formatted_address);
+    //           $('#search-place').focus();
+    //           setTimeout(() => $('#place').blur(), 1000);
+    //         } else {
+    //           // no results found at current location
+    //         }
+    //       } else {
+    //         // browser did not allow location services
+    //       }
+    //     });
+    //   }
+    //
+    //   const initialize = () => {
+    //     geocoder = new google.maps.Geocoder();
+    //     getLocation();
+    //   }
+    //   initialize();
+    // });
   </script>
 </body>
 </html>

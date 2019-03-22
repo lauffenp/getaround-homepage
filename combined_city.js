@@ -165,7 +165,6 @@
       $( "#start-time" ).on('change', changeStartTime);
       initializeDatePickers();
 
-
       // add default viewport
       this.viewport;
 
@@ -181,7 +180,10 @@
 
       // google maps stuff
       const input = $('#place')[0];
+      const input2 = $('#search-place')[0];
+
       const autocomplete = new google.maps.places.Autocomplete(input);
+      const autocomplete2 = new google.maps.places.Autocomplete(input2);
 
       this.placesChangedHandler = () => {
           var place = autocomplete.getPlace();
@@ -238,7 +240,8 @@
             if (results[1]) {
               autocomplete.set("place", results[1])
               $('#place').val(results[1].formatted_address);
-              $('#place').focus();
+              $('#search-place').val(results[1].formatted_address);
+              $('#search-place').focus();
               setTimeout(() => $('#place').blur(), 1000);
             } else {
               // no results found at current location
