@@ -1,0 +1,307 @@
+.search-inputs .col h1 {
+  line-height: 74px;
+  font-size: 65px;
+}
+
+.search-inputs .col h2 {
+  line-height: normal;
+  font-size: 36px;
+}
+
+*.search-inputs {
+  font-family: Greycliffcf, sans-serif;
+  line-height: 24px;
+  font-size: 16px;
+  border: none;
+  border-radius: 0;
+}
+
+.container.search-inputs {
+}
+
+@media (max-width: 767px) {
+  *.search-inputs {
+    font-size: 18px;
+  }
+}
+
+.search-inputs input.search-inputs.hasDatepicker {
+  text-align: left;
+  padding-right: 30px;
+  padding-left: 0;
+}
+
+
+.search-inputs input.search-inputs {
+  height: 21px;
+  cursor: pointer;
+  margin-bottom: 4px;
+  border-bottom: none;
+  justify-content:flex-end;
+  width: 100%;
+  outline: none;
+}
+
+.search-inputs label.search-inputs {
+  line-height: normal;
+  font-size: 12px;
+  color: #000000;
+  font-weight: bold;
+  margin-bottom: 0;
+  margin-top: 3px;
+  float:left;
+}
+
+.search-inputs .input-box.search-inputs {
+  background: #FFFFFF;
+  padding-bottom: 0;
+  border: 1px solid #666;
+  border-radius: 4px;
+  line-height: 15px;
+}
+
+@media (max-width: 991px) {
+  .search-inputs .input-box.search-inputs {
+    margin-bottom: 23px;
+  }
+}
+
+.search-inputs .flex.search-inputs {
+  justify-content: space-between;
+}
+
+.search-inputs input.ui-timepicker-input {
+  height: 21px;
+  background-color: transparent;
+  border: none;
+  -webkit-appearance: none;
+  -moz-appearance: none;
+  text-indent: 1px;
+  cursor: pointer;
+  border-bottom: none;
+  border-radius: 0;
+  padding-right: 30px;
+  text-align-last: right;
+  padding-left: 0;
+}
+
+.search-inputs select.ui-timepicker-select::-ms-expand {
+    display: none;
+}
+
+.search-inputs select.ui-timepicker-select option{
+  background-color: #fff;
+}
+
+
+.search-inputs .rt-al-chevron {
+  position: relative;
+  pointer-events: none;
+}
+
+.search-inputs .rt-al-chevron:before {
+  font-family: "Font Awesome 5 Free";
+  content: "\f078";
+  font-size: 14px;
+  font-weight: bold;
+  right:10px;
+  position: absolute;
+  top: -2px;
+  color: #888;
+  -webkit-text-stroke: 1px white;
+}
+
+.search-inputs .date-chevron.rt-al-chevron:before {
+  right: 40px;
+}
+
+.search-inputs .form-wrapper.search-inputs {
+  border-radius: 4px;
+  background-color: rgba(0,0,0,0);
+}
+
+.search-inputs button.search-inputs {
+  background-color: #CC33CC;
+  color: #ffffff;
+  height: 47px;
+  border-radius: 4px;
+  align-self: center;
+}
+
+.search-inputs button.search-inputs:disabled {
+  background-color: #e085e0;
+  color: #ddd;
+}
+
+.search-inputs button.search-inputs:hover {
+  background-color: #800080;
+}
+
+.search-inputs .search-inputs.container {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: space-between;
+  background: #FFFFFF;
+  padding: 21px;
+  border-radius: 4px;
+}
+
+@media(min-width: 992px) {
+  .search-inputs .search-inputs.col-lg-3 {
+    flex: 0 0 27%;
+    max-width: 27%;
+  }
+}
+
+@media (min-width: 768px) and (max-width: 991px) {
+  .search-inputs .search-inputs.col-md-5 {
+    flex: 0 0 48%;
+    max-width: 48%;
+  }
+}
+
+
+
+/* datepicker stuffz */
+.search-inputs .ui-datepicker {
+    width: 300px;
+    margin: 5px auto 0;
+    font: 12pt Arial, sans-serif;
+}
+
+.search-inputs .ui-datepicker table {
+    width: 100%;
+}
+
+.search-inputs .ui-datepicker-header {
+    border-width: 1px 0 0 0;
+    border-style: solid;
+    border-color: #111;
+}
+
+.search-inputs .ui-datepicker-title {
+    text-align: center;
+    font-size: 15px;
+}
+
+.search-inputs .ui-state-disabled {
+  opacity: 1 !important;
+}
+
+.search-inputs .ui-datepicker-prev {
+    float: left;
+    cursor: pointer;
+    background-position: center -30px;
+}
+
+.search-inputs .ui-datepicker-next {
+    float: right;
+    cursor: pointer;
+    background-position: center 0px;
+}
+
+.search-inputs .ui-datepicker thead {
+    background-color: #f7f7f7;
+}
+
+.search-inputs .ui-datepicker th {
+    text-transform: uppercase;
+    font-size: 8pt;
+    color: #666666;
+}
+
+.search-inputs .ui-datepicker tbody td {
+    padding: 0;
+}
+
+.search-inputs .ui-datepicker tbody td:last-child {
+    border-right: 0px;
+}
+
+.search-inputs .ui-datepicker tbody tr:last-child {
+    border-bottom: 0px;
+}
+
+.search-inputs .ui-datepicker a {
+    text-decoration: none;
+}
+
+.search-inputs .ui-datepicker td span, .ui-datepicker td a {
+  display: inline-block;
+  text-align: center;
+  width: 30px;
+  height: 30px;
+  line-height: 30px;
+  color: #ffffff;
+}
+
+.search-inputs .ui-datepicker-calendar .ui-state-default, .ui-state-highlight {
+      color:#000;
+      background-color: #fff;
+      border: none;
+      height:40px;
+      width:40px;
+}
+
+.search-inputs .ui-datepicker-calendar .ui-state-hover {
+    background: #CC33CC;
+    color: #FFFFFF;
+}
+
+.search-inputs .ui-datepicker-calendar .ui-state-active {
+    background: #e085e0;
+    -webkit-box-shadow: inset 0px 0px 10px 0px rgba(0, 0, 0, .1);
+    -moz-box-shadow: inset 0px 0px 10px 0px rgba(0, 0, 0, .1);
+    box-shadow: inset 0px 0px 10px 0px rgba(0, 0, 0, .1);
+    color: #e0e0e0;
+    text-shadow: 0px 1px 0px #4d7a85;
+    border: 1px solid #55838f;
+    position: relative;
+    margin: -1px;
+}
+
+.search-inputs .ui-datepicker-unselectable .ui-state-default {
+  color: #ddd;
+  cursor: default;
+  opacity: 1;
+}
+
+.search-inputs .ui-datepicker .ui-datepicker-prev span, .ui-datepicker .ui-datepicker-next span {
+  background-image: none !important;
+}
+
+.search-inputs .ui-datepicker-next span.ui-icon {
+    width: 16x; //this the width of the icon. increase it if your icon is bigger
+    height: 16px;
+    display: block;
+    text-indent: 0;
+    overflow: hidden;
+    background-repeat: no-repeat;
+}
+
+.search-inputs .ui-datepicker-next span:before {
+  font-family: "Font Awesome 5 Free";
+  content: "\f054";
+  font-weight: 900;
+  display: block;
+  z-index: 10;
+  color: #000;
+}
+
+.search-inputs .ui-datepicker-prev span.ui-icon {
+    width: 16x; 
+    height: 16px;
+    display: block;
+    text-indent: 0;
+    overflow: hidden;
+    background-repeat: no-repeat;
+}
+
+.search-inputs .ui-datepicker-prev span:before {
+  font-family: "Font Awesome 5 Free";
+  content: "\f053";
+  font-weight: 900;
+  display: block;
+  z-index: 10;
+  color: #000;
+}

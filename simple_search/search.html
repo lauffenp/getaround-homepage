@@ -1,0 +1,121 @@
+<html>
+<head>
+  <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+</head>
+<body>
+  <link href="https://cdnjs.cloudflare.com/ajax/libs/jqueryui/1.12.1/jquery-ui.css" rel="stylesheet"></link>
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/timepicker@1.11.14/jquery.timepicker.min.css"></link>
+  <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css"></link>
+  <link href="./style.css" rel="stylesheet"></link>
+  <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.7.2/css/all.css" integrity="sha384-fnmOCqbTlWIlj8LyTjo7mOUStjsKC4pOpQbqyi7RrhN7udi9RwhKkMHpvLbHG9Sr" crossorigin="anonymous">
+  <div class="simple-search d-inline-flex container col-12 col-md-6">
+    <div class="col-8">
+      <input id="search-place" class="search" placeholder="San Diego, CA" />
+    </div>
+    <button id="submit-search" class="btn search-inputs col-4 d-none d-md-block">Search for cars</button>
+    <button id="submit-search" class="btn search-inputs col-2 d-md-none d-sm-block"><i class="fas fa-search"></i></button>
+  </div>
+  <script src="https://d1tdp7z6w94jbb.cloudfront.net/js/jquery-3.3.1.min.js" type="text/javascript" integrity="sha256-FgpCb/KJQlLNfOu91ta32o/NMZxltwRo8QtmkMRdAu8=" crossorigin="anonymous"></script>
+<script
+    src="https://code.jquery.com/ui/1.12.1/jquery-ui.min.js"
+    integrity="sha256-VazP97ZCwtekAsvgPBSUwPFKdrwD3unUfSGVYrahUqU="
+    crossorigin="anonymous"></script>
+
+  <script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyCaHROYjZ3JaEJvX3EZaYHiB2ojmqS3m3M&libraries=places"></script>
+  <!-- moment -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.24.0/moment.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/timepicker@1.11.14/jquery.timepicker.min.js"></script>
+  <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js" integrity="sha384-JjSmVgyd0p3pXB1rRibZUAYoIIy6OrQ6VrjIEaFf/nJGzIxFDsf4x0xIM+B07jRM" crossorigin="anonymous"></script>
+  <script type="text/javascript">
+
+    $(document).ready(function() {
+      // add default viewport
+      this.viewport;
+
+      this.urlPort = window.location.port;
+      let urlHostName = window.location.hostname;
+      if (urlHostName == "w.getaround.com" || urlHostName == "getaround.webflow.io" || !urlHostName || urlHostName === '' ) {
+          urlHostName = "www.getaround.com"
+      }
+      const pageHost = urlHostName;
+      if (this.urlPort !== "") {
+          this.urlHostName += ":";
+      }
+
+      // google maps stuff
+      const input = $('#search-place')[0];
+      const autocomplete = new google.maps.places.Autocomplete(input);
+
+      this.placesChangedHandler = () => {
+          var place = autocomplete.getPlace();
+          if (!place.geometry) {
+            // User entered the name of a Place that was not suggested and
+            // pressed the Enter key, or the Place Details request failed.
+            window.alert("No details available for input: '" + place.name + "'");
+          } else {
+            if (place.geometry.viewport) {
+              const vp = place.geometry.viewport;
+              this.viewport = `${vp.ma.j},${vp.ga.j},${vp.ma.l},${vp.ga.l}`;
+            } else {
+              window.alert("No details available for input: '" + place.name + "'");
+            }
+          }
+        }
+
+      autocomplete.setFields(['address_components', 'geometry','name']);
+      autocomplete.addListener('place_changed', this.placesChangedHandler);
+
+      this.getSearchParams = () => {
+        const use = 'use=CARSHARE';
+        const viewport = `viewport=${this.viewport}`;
+        return `${use}&${viewport}`;
+      }
+      this.redirectToSearch = e => {
+        e.preventDefault();
+        const searchParams = this.getSearchParams();
+
+        window.location.href = `https://www.getaround.com/search?${searchParams}`;
+      }
+      $("#submit-search").on("click", this.redirectToSearch);
+
+      let geocoder;
+
+      const getLocation = () => {
+        if (navigator.geolocation) {
+          navigator.geolocation.getCurrentPosition(showPosition);
+        }
+      }
+
+      const showPosition = position => {
+        codeLatLng(position.coords.latitude, position.coords.longitude);
+      }
+
+      const codeLatLng = (lat, lng) => {
+        var latlng = new google.maps.LatLng(lat, lng);
+        geocoder.geocode({
+          'latLng': latlng
+        }, function (results, status) {
+          if (status === google.maps.GeocoderStatus.OK) {
+            if (results[1]) {
+              autocomplete.set("place", results[1])
+              $('#search-place').val(results[1].formatted_address);
+              $('#search-place').focus();
+              setTimeout(() => $('#place').blur(), 1000);
+            } else {
+              // no results found at current location
+            }
+          } else {
+            // browser did not allow location services
+          }
+        });
+      }
+
+      const initialize = () => {
+        geocoder = new google.maps.Geocoder();
+        getLocation();
+      }
+      initialize();
+    });
+  </script>
+</body>
+</html>
