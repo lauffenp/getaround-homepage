@@ -16,8 +16,6 @@
   border-radius: 0;
 }
 
-.container.search-inputs {
-}
 
 @media (max-width: 767px) {
   *.search-inputs {
@@ -31,6 +29,33 @@
   padding-left: 0;
 }
 
+.search-inputs input.search-inputs.hasDatepicker {
+  width: 78px;
+  padding-right: 10px;
+}
+
+.search-inputs .rt-al-chevron:before {
+  right: 0;
+}
+
+.search-inputs input.ui-timepicker-input {
+  width: 89px;
+}
+
+@media (max-width: 486px) {
+  .search-inputs input.search-inputs.hasDatepicker {
+    width: 86px;
+  }
+
+  .search-inputs input.ui-timepicker-input {
+    width: 103px;
+  }
+}
+
+.input-row {
+  justify-content: space-between;
+  width: 100%;
+}
 
 .search-inputs input.search-inputs {
   height: 21px;
@@ -38,7 +63,6 @@
   margin-bottom: 4px;
   border-bottom: none;
   justify-content:flex-end;
-  width: 100%;
   outline: none;
 }
 
@@ -80,8 +104,6 @@
   cursor: pointer;
   border-bottom: none;
   border-radius: 0;
-  padding-right: 30px;
-  text-align-last: right;
   padding-left: 0;
 }
 
@@ -104,16 +126,12 @@
   content: "\f078";
   font-size: 14px;
   font-weight: bold;
-  right:10px;
   position: absolute;
-  top: -2px;
+  top: 3px;
   color: #888;
   -webkit-text-stroke: 1px white;
 }
 
-.search-inputs .date-chevron.rt-al-chevron:before {
-  right: 40px;
-}
 
 .search-inputs .form-wrapper.search-inputs {
   border-radius: 4px;
@@ -289,7 +307,7 @@
 }
 
 .search-inputs .ui-datepicker-prev span.ui-icon {
-    width: 16x; 
+    width: 16x;
     height: 16px;
     display: block;
     text-indent: 0;

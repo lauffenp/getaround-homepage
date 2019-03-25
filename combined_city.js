@@ -185,6 +185,8 @@
       const autocomplete = new google.maps.places.Autocomplete(input);
       const autocomplete2 = new google.maps.places.Autocomplete(input2);
 
+      const assignViewportToSearch = vp => this.viewport = `${vp.ma.j},${vp.ga.j},${vp.ma.l},${vp.ga.l}`;
+
       this.placesChangedHandler = () => {
           var place = autocomplete.getPlace();
           if (!place.geometry) {
@@ -194,7 +196,7 @@
           } else {
             if (place.geometry.viewport) {
               const vp = place.geometry.viewport;
-              this.viewport = `${vp.ma.j},${vp.ga.j},${vp.ma.l},${vp.ga.l}`;
+              assignViewportToSearch(vp);
             } else {
               window.alert("No details available for input: '" + place.name + "'");
             }
@@ -202,7 +204,9 @@
         }
 
       autocomplete.setFields(['address_components', 'geometry','name']);
+      autocomplete2.setFields(['address_components', 'geometry','name']);
       autocomplete.addListener('place_changed', this.placesChangedHandler);
+      autocomplete2.addListener('place_changed', this.placesChangedHandler);
 
       this.getSearchParams = () => {
         const end_time = `end_time=${end.format(MOMENT_FORMAT)}`;
@@ -218,6 +222,7 @@
         window.location.href = `https://www.getaround.com/search?${searchParams}`;
       }
       $("#submit-search").on("click", this.redirectToSearch);
+      $(".btn.search-inputs").on("click", this.redirectToSearch);
 
       let geocoder;
 
@@ -240,8 +245,6 @@
             if (results[1]) {
               autocomplete.set("place", results[1])
               $('#place').val(results[1].formatted_address);
-              $('#search-place').val(results[1].formatted_address);
-              $('#search-place').focus();
               setTimeout(() => $('#place').blur(), 1000);
             } else {
               // no results found at current location
@@ -252,9 +255,51 @@
         });
       }
 
+
+
+      const getCityViewport = () => {
+
+        const urlCityList = [
+          {url: 'atlanta-car-rental', city: 'Atlanta, GA'},
+          {url: 'berkeley-car-rental', city: 'Berkeley, CA'},
+          {url: 'boston-car-rental', city: 'Boston, MA'},
+          {url: 'chicago-car-rental', city: 'Chicago, IL'},
+          {url: 'denver-car-rental', city: 'Denver, CO'},
+          {url: 'los-angeles-car-rental', city: 'Los Angeles, CA'},
+          {url: 'miami-car-rental', city: 'Miami, FL'},
+          {url: 'new-jersey-car-rental', city: 'Jersey City, NJ'},
+          {url: 'new-york-car-rental', city: 'New York City, NY'},
+          {url: 'oakland-car-rental', city: 'Oakland, CA'},
+          {url: 'philadelphia-car-rental', city: 'Philadelphia, PA'},
+          {url: 'portland-car-rental', city: 'Portland, OR'},
+          {url: 'san-diego-car-rental', city: 'San Diego, CA'},
+          {url: 'san-francisco-car-rental', city: 'San Francisco, CA'},
+          {url: 'seattle-car-rental', city: 'Seattle, WA'},
+          {url: 'washington-dc-car-rental', city: 'Washington, D.C.'},
+        ];
+        const url = window.location.href;
+        const last = url.split('/')[url.split('/').length - 1];
+        const { city } = urlCityList.find(i => last.search(i.url) > -1) || { city: 'San Francisco, CA' };
+        var request = {
+            query: city,
+            fields: ['geometry'],
+          };
+
+          $('#search-place').val(city);
+
+          var service = new google.maps.places.PlacesService(document.createElement('div'));
+
+          service.findPlaceFromQuery(request, function(results, status) {
+            if (status === google.maps.places.PlacesServiceStatus.OK) {
+              assignViewportToSearch(results[0].geometry.viewport);
+            }
+          });
+      }
+
       const initialize = () => {
         geocoder = new google.maps.Geocoder();
         getLocation();
+        getCityViewport();
       }
       initialize();
       const REVIEW_MOMENT_FORMAT = 'MMMM Do, YYYY';

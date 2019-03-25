@@ -11,22 +11,36 @@
   <div class="col">
   <div class="form-wrapper search-inputs d-flex justify-center">
     <div class="search-inputs d-lg-inline-flex container">
-      <div class="flex flex-column input-box search-inputs col-lg-3">
+      <div class="d-flex flex-column input-box search-inputs col-lg-3">
         <label class="search-inputs">Where</label>
         <input placeholder="City, address, or zip code" id="place" class="search-inputs"/>
       </div>
       <div class="flex flex-column input-box search-inputs col-md-5 col-lg-3">
         <label class="search-inputs">Start</label>
-        <div class="d-inline-flex search-inputs">
-          <input id="start-date" readonly="readonly" class="search-inputs col-sm"><span class="rt-al-chevron date-chevron"></span></input>
-          <input id="start-time" class="search-inputs col-sm" ><span class="rt-al-chevron"></span></input>
+        <div class="d-inline-flex input-row">
+          <div class="d-inline-flex">
+            <input id="start-date" readonly="readonly" class="search-inputs col-sm">
+            </input>
+            <span class="rt-al-chevron date-chevron"></span>
+        </div>
+        <div class="d-inline-flex">
+          <input id="start-time" class="search-inputs col-sm" >
+          </input>
+          <span class="rt-al-chevron"></span>
+        </div>
         </div>
       </div>
       <div class="flex flex-column input-box search-inputs col-md-5 col-lg-3">
         <label class="search-inputs">End</label>
-        <div class="d-inline-flex search-inputs">
-          <input id="end-date" readonly="readonly" class="search-inputs col-sm"><span class="rt-al-chevron date-chevron"></span></input>
-          <input id="end-time" class="search-inputs col-sm"><span class="rt-al-chevron"></span></input>
+        <div class="d-inline-flex input-row">
+          <div class="d-inline-flex">
+            <input id="end-date" readonly="readonly" class="search-inputs col-sm"></input>
+            <span class="rt-al-chevron date-chevron"></span>
+          </div>
+          <div class="d-inline-flex">
+            <input id="end-time" class="search-inputs col-sm"></input>
+            <span class="rt-al-chevron"></span>
+          </div>
         </div>
       </div>
       <button id="submit-search" class="search-inputs col-lg-2 col-sm-12">Search for cars</button>
@@ -44,7 +58,7 @@
   <script src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.24.0/moment.js"></script>
   <script src="https://cdn.jsdelivr.net/npm/timepicker@1.11.14/jquery.timepicker.min.js"></script>
   <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js" integrity="sha384-JjSmVgyd0p3pXB1rRibZUAYoIIy6OrQ6VrjIEaFf/nJGzIxFDsf4x0xIM+B07jRM" crossorigin="anonymous"></script>
-  <script src="../reviews/reviews.js"></script>
+  <script src="../combined_city.js"></script>
 
   <!-- <script type="text/javascript">
 
