@@ -1,5 +1,10 @@
 $(document).ready(function() {
+
+  // fixes bug where date was getting dropped into place
   $('#place').val('');
+
+  // Timepicker search options code
+  //define start end
   let start = moment();
   let end = moment();
   const now = moment();
@@ -89,11 +94,10 @@ $(document).ready(function() {
     setEndDateAndTime(end);
   }
 
-  const calendarOptions = {
+  const calOpts = {
     minDate: now.toDate(),
     hideIfNoPrevNext: true,
     dateFormat: 'm/d/y',
-    // altFormat: 'm/d/y'
   }
 
   const convertValDateText = valDateText => moment(valDateText, 'M/D/YY').format('MM/DD/YYYY');
@@ -125,7 +129,7 @@ $(document).ready(function() {
     timeFormat: 'h:i A',
   }
 
-  adjustEndDateAgainstStart = () => {
+  modifyEndAgainstStart = () => {
     if (start.clone().add(1, 'h').isAfter(start.clone().endOf('day'))) {
       // then we need to push the end, and min end, to the next day
       const minEndDate = start.clone().add(1, 'd');
@@ -142,7 +146,7 @@ $(document).ready(function() {
     if (start.day() === 5) { // is friday, so set default start time to 48 hours ahead
       end.set({D: start.date() + 2, h: start.hour(), m: start.minutes()})
     }
-    adjustEndDateAgainstStart()
+    modifyEndAgainstStart()
   }
 
   const changeStartTime = (e) => {
@@ -157,30 +161,35 @@ $(document).ready(function() {
     setStartDateAndTime(start);
   }
 
-  $( "#end-date" ).datepicker({...calendarOptions, onSelect: changeEndDate });
-  $( "#start-date" ).datepicker({ ...calendarOptions, onSelect: changeStartDate });
+  $( "#end-date" ).datepicker({...calOpts, onSelect: changeEndDate });
+  $( "#start-date" ).datepicker({ ...calOpts, onSelect: changeStartDate });
   $( "#end-time" ).timepicker(timepickerOptions);
   $( "#start-time" ).timepicker(timepickerOptions);
   $( "#start-time" ).on('change', changeStartTime);
   initializeDatePickers();
 
-
   // add default viewport
   this.viewport;
+  // mapViewport is used for mapview, and simple search
+  this.mapViewport;
 
-  this.urlPort = window.location.port;
-  let urlHostName = window.location.hostname;
-  if (urlHostName == "w.getaround.com" || urlHostName == "getaround.webflow.io" || !urlHostName || urlHostName === '' ) {
-      urlHostName = "www.getaround.com"
-  }
-  const pageHost = urlHostName;
-  if (this.urlPort !== "") {
-      this.urlHostName += ":";
-  }
+  let urlHostName = "www.getaround.com"
 
   // google maps stuff
   const input = $('#place')[0];
+  const input2 = $('#search-place')[0];
+
   const autocomplete = new google.maps.places.Autocomplete(input);
+  const autocomplete2 = new google.maps.places.Autocomplete(input2);
+
+  const assignViewportToSearch = (vp, isMap) => {
+    const vpS = `${vp.ma.j},${vp.ga.j},${vp.ma.l},${vp.ga.l}`;
+    if (isMap) {
+      this.mapViewport = vpS;
+    } else {
+      this.viewport = vpS;
+    }
+  }
 
   this.placesChangedHandler = () => {
       var place = autocomplete.getPlace();
@@ -191,7 +200,7 @@ $(document).ready(function() {
       } else {
         if (place.geometry.viewport) {
           const vp = place.geometry.viewport;
-          this.viewport = `${vp.ma.j},${vp.ga.j},${vp.ma.l},${vp.ga.l}`;
+          assignViewportToSearch(vp);
         } else {
           window.alert("No details available for input: '" + place.name + "'");
         }
@@ -199,228 +208,24 @@ $(document).ready(function() {
     }
 
   autocomplete.setFields(['address_components', 'geometry','name']);
+  autocomplete2.setFields(['address_components', 'geometry','name']);
   autocomplete.addListener('place_changed', this.placesChangedHandler);
+  autocomplete2.addListener('place_changed', this.placesChangedHandler);
 
-  this.getSearchParams = () => {
+  this.getSearchParams = (useMapVP) => {
     const end_time = `end_time=${end.format(MOMENT_FORMAT)}`;
     const start_time = `start_time=${start.format(MOMENT_FORMAT)}`;
     const use = 'use=CARSHARE';
-    const viewport = `viewport=${this.viewport}`;
+    const viewport = `viewport=${useMapVP ? this.mapViewport : this.viewport}`;
     return `${start_time}&${end_time}&${use}&${viewport}`;
   }
+
   this.redirectToSearch = e => {
     e.preventDefault();
-    const searchParams = this.getSearchParams();
-
+    const { mvp } = e.data ? e.data : {mvp: false};
+    const searchParams = this.getSearchParams(mvp);
     window.location.href = `https://www.getaround.com/search?${searchParams}`;
   }
-  $("#submit-search").on("click", this.redirectToSearch);
 
-  let geocoder;
-
-  const getLocation = () => {
-    if (navigator.geolocation) {
-      navigator.geolocation.getCurrentPosition(showPosition);
-    }
-  }
-
-  const showPosition = position => {
-    codeLatLng(position.coords.latitude, position.coords.longitude);
-  }
-
-  const codeLatLng = (lat, lng) => {
-    var latlng = new google.maps.LatLng(lat, lng);
-    geocoder.geocode({
-      'latLng': latlng
-    }, function (results, status) {
-      if (status === google.maps.GeocoderStatus.OK) {
-        if (results[1]) {
-          autocomplete.set("place", results[1])
-          $('#place').val(results[1].formatted_address);
-          $('#place').focus();
-          setTimeout(() => $('#place').blur(), 1000);
-        } else {
-          // no results found at current location
-        }
-      } else {
-        // browser did not allow location services
-      }
-    });
-  }
-
-  const initialize = () => {
-    geocoder = new google.maps.Geocoder();
-    getLocation();
-  }
-  initialize();
-  const REVIEW_MOMENT_FORMAT = 'MMMM Do, YYYY';
-  const MD = 768;
-  const SM = 576;
-
-  const width = () => $( window ).width();
-
-  const apiUrl = 'https://us-central1-getaround3.cloudfunctions.net/api';
-
-  const getNum = () => {
-    if (width() > MD) {
-      return 4;
-    }
-    if (width() > SM) {
-      return 3;
-    }
-    return 1;
-  }
-
-  this.num = getNum();
-  this.offset = 2 * getNum();
-  this.reviews = [];
-
-  const populateReviewsItem = (newReviews) => {
-    if (this.offset > 19 && newReviews.length) {
-      const children = $('#reviews-wrapper').children();
-      let i = 0;
-      while (i < getNum() && newReviews[i]) {
-        children[i].remove();
-        i++;
-      }
-    }
-
-    if (newReviews && newReviews.length) {
-      const cards = newReviews.map(review =>
-        `
-        <div class="col-12 col-md-4 col-lg-3 card-wrapper">
-          <div class="card">
-            <div class="card-body">
-              <div class="card-title d-flex">
-                <h5 class="col-9">
-                  ${review.name}
-                  <br />
-                  <span>
-                    ${moment(review.date).format(REVIEW_MOMENT_FORMAT)}
-                  </span>
-                </h5>
-
-                <div class="col-3" style="background-image: url(${review['persona-image'].url})" />
-              </div>
-              <div class="row stars-holder">
-                ${[...Array(4)].map((e, i) => '<i class="fas fa-star" />').join('')}
-              </div>
-              <p class="card-text">
-                ${review.comment}
-              </p>
-            </div>
-          </div>
-        <div>
-        `
-      )
-      $('#reviews-wrapper').append(cards)
-    }
-  }
-
-  const fetchItems = ({ num = 8, offset = 0 } = {}) => {
-    fetch(`${apiUrl}/collections/5c1c459d6f08bd4d33d101ac?num=${num}&offset=${offset}`)
-    .then(res => res.json())
-    .then(data => {
-      if (data && data.items) {
-        this.reviews = this.reviews.concat(data.items);
-        populateReviewsItem(data.items);
-      }
-    })
-    .catch(console.error)
-    .catch(console.error);
-  }
-
-  this.cars = [];
-
-  const toShow = () => {
-    if (width() < SM) {
-      return 1;
-    }
-    if (width() <= MD) {
-      return 2;
-    }
-    return 4;
-  }
-
-  const populateCarsItem = (newCars) => {
-    if (newCars && newCars.length) {
-      $("#carousel").slick({
-        swipeToSlide: true,
-        slidesToShow: toShow(),
-        centerMode: width() <= MD,
-        arrows: width() > SM,
-        nextArrow: '<i class="arrow fas fa-chevron-right fa-2x" ></i>',
-        prevArrow: '<i class="arrow fas fa-chevron-left fa-2x" ></i>',
-        autoplay: true,
-        lazyLoad: 'progressive'
-      });
-      newCars.forEach(car => {
-        $("#carousel").slick('slickAdd',`
-        <div class="wrapper">
-          <div class="item">
-            <div class="bg-img" style="background-image: url(${car['car-photo'].url})" />
-            <div class="caption">
-              <h3>${car.name}</h3>
-              <p>from $${car.price}/hr</p>
-              <a href='https://${car['car-url']}'>${car.name}</a>
-            </div>
-          </div>
-        </div>
-        `);
-      }
-      )
-    }
-  }
-
-  const fetchCars = ({ num = 12, offset = 0 } = {}) => {
-    fetch(`${apiUrl}/collections/5c913f3b0b45a005abe59251?num=${num}&offset=${offset}`)
-    .then(res => res.json())
-    .then(data => {
-      if (data && data.items) {
-        this.cars = this.cars.concat(data.items);
-        populateCarsItem(data.items);
-      }
-    })
-    .catch(console.error)
-    .catch(console.error);
-  }
-
-  const initData = () => {
-    this.cars = [];
-    fetchCars({ num: 12 });
-    this.reviews = [];
-    fetchItems({ num: this.num * 2 });
-    this.offset = 2 * getNum();
-  }
-
-  const loadMore = () => {
-    this.offset = this.offset + getNum();
-    fetchItems({ num: this.num, offset: this.offset });
-  }
-
-  const resize = () => {
-    this.num = getNum();
-    this.offset = 2 * getNum();
-    const children = $('#reviews-wrapper').children();
-    let i;
-    for (i = 0; i < children.length; i++) {
-      children[i].remove();
-    }
-    initData();
-  }
-
-  $("#load-more").on('click', loadMore);
-  $(window).on('resize', () => {
-    $("#carousel").slick('unslick');
-    const children = $('#carousel').children();
-    let i;
-    for (i = 0; i < children.length; i++) {
-      children[i].remove();
-    }
-    clearTimeout(window.resizedFinished);
-    window.resizedFinished = setTimeout(() => {
-      resize();
-    }, 250);
-  });
-  initData();
+  $(".btn.search-inputs").on("click", this.redirectToSearch, {mvp: true});
 });

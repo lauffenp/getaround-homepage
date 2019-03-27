@@ -6,7 +6,103 @@
   <link href="https://cdnjs.cloudflare.com/ajax/libs/jqueryui/1.12.1/jquery-ui.css" rel="stylesheet"></link>
   <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/timepicker@1.11.14/jquery.timepicker.min.css"></link>
   <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css"></link>
-  <link href="./style.css" rel="stylesheet"></link>
+  <style>
+  @keyframes fade-in {
+    from {
+      opacity: 0;
+    }
+    to {
+      opacity: 1;
+    }
+  }
+
+  * {
+    font-family: Greycliffcf, sans-serif;
+  }
+
+  @media (min-width: 768px) {
+    #reviews-wrapper {
+      min-height: 536px;
+    }
+  }
+
+  .card-wrapper {
+    height: 268px;
+  }
+
+  .col {
+    padding: 0;
+  }
+
+  .card {
+    height: 243px;
+    box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.1);
+    border-radius: 8px;
+    border: none;
+    animation: fade-in ease 1s forwards;
+  }
+
+  .card-title {
+    margin-left: 17px;
+  }
+
+
+  .card-title div.col-3 {
+    max-height: 46px;
+    max-width: 46px;
+    border-radius: 23px;
+    background-position: center;
+    background-repeat: no-repeat;
+    background-size: contain;
+  }
+
+  .card-title h5{
+    padding-left: 0;
+    font-weight: bold;
+    line-height: 24px;
+    font-size: 16px;
+    white-space: nowrap;
+    text-overflow: ellipsis;
+    overflow: hidden;
+  }
+
+  .card-title h5 span {
+    font-weight: normal;
+  }
+
+  .card p {
+    line-height: 1.5em;
+    font-size: 1em;
+    max-height: 6em;
+    margin-left: 17px;
+    text-overflow: ellipsis;
+    overflow: hidden;
+  }
+
+  .stars-holder {
+    margin: 10px;
+    margin-left: 17px;
+  }
+
+  .fa-star {
+    color: #CC33CC;
+  }
+
+  .btn-link {
+    color: #CC33CC;
+    line-height: 23px;
+    font-size: 21px;
+    text-decoration-line: underline;
+  }
+
+  .btn-link:hover{
+    color:  #800080
+  }
+
+  .card-body {
+    padding-left: 0;
+  }
+  </style>
   <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.7.2/css/all.css" integrity="sha384-fnmOCqbTlWIlj8LyTjo7mOUStjsKC4pOpQbqyi7RrhN7udi9RwhKkMHpvLbHG9Sr" crossorigin="anonymous">
   <div class="col">
     <div id="reviews-wrapper" class="d-flex row">
@@ -24,117 +120,5 @@
   <script src="https://cdn.jsdelivr.net/npm/timepicker@1.11.14/jquery.timepicker.min.js"></script>
   <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js" integrity="sha384-JjSmVgyd0p3pXB1rRibZUAYoIIy6OrQ6VrjIEaFf/nJGzIxFDsf4x0xIM+B07jRM" crossorigin="anonymous"></script>
   <script src="./reviews.js"></script>
-  <!-- <script type="text/javascript">
-
-    $(document).ready(function() {
-      const REVIEW_MOMENT_FORMAT = 'MMMM Do, YYYY';
-      const MD = 768;
-      const SM = 576;
-
-      const width = () => $( window ).width();
-
-      const apiUrl = 'https://us-central1-getaround3.cloudfunctions.net/api';
-
-      const getNum = () => {
-        if (width() > MD) {
-          return 4;
-        }
-        if (width() > SM) {
-          return 3;
-        }
-        return 1;
-      }
-
-      this.num = getNum();
-      this.offset = 2 * getNum();
-      this.reviews = [];
-
-      const populateReviewsItem = (newReviews) => {
-        if (this.offset > 19 && newReviews.length) {
-          const children = $('#reviews-wrapper').children();
-          let i = 0;
-          while (i < getNum() && newReviews[i]) {
-            children[i].remove();
-            i++;
-          }
-        }
-
-        if (newReviews && newReviews.length) {
-          const cards = newReviews.map(review =>
-            `
-            <div class="col-12 col-md-4 col-lg-3 card-wrapper">
-              <div class="card">
-                <div class="card-body">
-                  <div class="card-title d-flex">
-                    <h5 class="col-9">
-                      ${review.name}
-                      <br />
-                      <span>
-                        ${moment(review.date).format(REVIEW_MOMENT_FORMAT)}
-                      </span>
-                    </h5>
-
-                    <div class="col-3" style="background-image: url(${review['persona-image'].url})" />
-                  </div>
-                  <div class="row stars-holder">
-                    ${[...Array(4)].map((e, i) => '<i class="fas fa-star" />').join('')}
-                  </div>
-                  <p class="card-text">
-                    ${review.comment}
-                  </p>
-                </div>
-              </div>
-            <div>
-            `
-          )
-          $('#reviews-wrapper').append(cards)
-        }
-      }
-
-      const fetchItems = ({ num = 8, offset = 0 } = {}) => {
-        fetch(`${apiUrl}/collections/reviews?num=${num}&offset=${offset}`)
-        .then(res => res.json())
-        .then(data => {
-          if (data && data.items) {
-            this.reviews = this.reviews.concat(data.items);
-            populateReviewsItem(data.items);
-          }
-        })
-        .catch(console.error)
-        .catch(console.error);
-      }
-
-      const initData = () => {
-        this.reviews = [];
-        fetchItems({ num: this.num * 2 });
-        this.offset = 2 * getNum();
-      }
-
-      const loadMore = () => {
-        this.offset = this.offset + getNum();
-        fetchItems({ num: this.num, offset: this.offset });
-      }
-
-      const resize = () => {
-        this.num = getNum();
-        this.offset = 2 * getNum();
-        const children = $('#reviews-wrapper').children();
-        let i;
-        for (i = 0; i < children.length; i++) {
-          children[i].remove();
-        }
-        initData();
-      }
-
-      initData();
-      $("#load-more").on('click', loadMore);
-      $(window).on('resize', () => {
-        clearTimeout(window.resizedFinished);
-        window.resizedFinished = setTimeout(() => {
-          resize();
-        }, 250);
-      });
-    });
-    </script> -->
 </body>
 </html>
