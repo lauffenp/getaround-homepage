@@ -218,7 +218,7 @@ $(document).ready(function() {
             <div class="caption">
               <h3>${car.name}</h3>
               <p>from $${car.price}/hr</p>
-              <a href='https://${car['car-url']}'>${car.name}</a>
+              <a href='https://${car['car-url']}'>${car.name.split(' in ')[0]}</a>
             </div>
           </div>
         </div>
