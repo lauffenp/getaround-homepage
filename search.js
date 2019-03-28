@@ -174,10 +174,8 @@ $(document).ready(function() {
   let urlHostName = "www.getaround.com"
 
   // google maps stuff
-  const input = $('#place')[0];
   const input2 = $('#search-place')[0];
 
-  const autocomplete = new google.maps.places.Autocomplete(input);
   const autocomplete2 = new google.maps.places.Autocomplete(input2);
 
   const assignViewportToSearch = (vp, isMap) => {
@@ -205,10 +203,45 @@ $(document).ready(function() {
       }
     }
 
-  autocomplete.setFields(['address_components', 'geometry','name']);
-  autocomplete2.setFields(['address_components', 'geometry','name']);
-  autocomplete.addListener('place_changed', this.placesChangedHandler);
-  autocomplete2.addListener('place_changed', this.placesChangedHandler);
+  let geocoder;
+  const input = $('#place')[0];
+
+  const autocomplete = new google.maps.places.Autocomplete(input);
+
+  const getLocation = () => {
+    if (navigator.geolocation) {
+      navigator.geolocation.getCurrentPosition(showPosition);
+    }
+  }
+
+  const showPosition = position => {
+    codeLatLng(position.coords.latitude, position.coords.longitude);
+  }
+
+  const codeLatLng = (lat, lng) => {
+    var latlng = new google.maps.LatLng(lat, lng);
+    geocoder.geocode({
+      'latLng': latlng
+    }, function (results, status) {
+      if (status === google.maps.GeocoderStatus.OK) {
+        if (results[0]) {
+          autocomplete.set("place", results[0])
+          try {
+            const adminLevel1 = results[0].address_components.find(c => c.types.indexOf("administrative_area_level_1") > -1).long_name;
+            const locality = results[0].address_components.find(c => c.types.indexOf("locality") > -1).long_name;
+            $('#place').val(`${locality}, ${adminLevel1}`);
+            setTimeout(() => $('#place').blur(), 1000);
+          } catch (e) {
+
+          }
+        } else {
+          // no results found at current location
+        }
+      } else {
+        // browser did not allow location services
+      }
+    });
+  }
 
   this.getSearchParams = (useMapVP) => {
     const end_time = `end_time=${end.format(MOMENT_FORMAT)}`;
@@ -218,12 +251,28 @@ $(document).ready(function() {
     return `${start_time}&${end_time}&${use}&${viewport}`;
   }
 
-  this.redirectToSearch = e => {
+  this.redirectToSearch = (e, data) => {
     e.preventDefault();
-    const { mvp } = e.data ? e.data : {mvp: false};
+    const mvp = data ? data.mvp : false;
     const searchParams = this.getSearchParams(mvp);
     window.location.href = `https://www.getaround.com/search?${searchParams}`;
   }
 
-  $(".btn.search-inputs").on("click", this.redirectToSearch, {mvp: true});
+  $("#submit-search").on("click", e => this.redirectToSearch(e, {mvp: false}));
+
+    const initialize = () => {
+      geocoder = new google.maps.Geocoder();
+      getLocation();
+    }
+
+
+    autocomplete.setFields(['address_components', 'geometry','name']);
+    autocomplete2.setFields(['address_components', 'geometry','name']);
+    autocomplete.addListener('place_changed', this.placesChangedHandler);
+    autocomplete2.addListener('place_changed', this.placesChangedHandler);
+
+    initialize();
+
+
+
 });

@@ -11,6 +11,8 @@ function initMap () {
 
 
 $(document).ready(function() {
+  const MOMENT_FORMAT = 'YYYY-MM-DDTHH:mm:ss.SSS'
+
   const assignViewportToSearch = (vp, isMap) => {
     const vpS = `${vp.ma.j},${vp.ga.j},${vp.ma.l},${vp.ga.l}`;
     if (isMap) {
@@ -24,36 +26,7 @@ $(document).ready(function() {
     map.fitBounds(viewport);
   }
 
-  let geocoder;
 
-  const getLocation = () => {
-    if (navigator.geolocation) {
-      navigator.geolocation.getCurrentPosition(showPosition);
-    }
-  }
-
-  const showPosition = position => {
-    codeLatLng(position.coords.latitude, position.coords.longitude);
-  }
-
-  const codeLatLng = (lat, lng) => {
-    var latlng = new google.maps.LatLng(lat, lng);
-    geocoder.geocode({
-      'latLng': latlng
-    }, function (results, status) {
-      if (status === google.maps.GeocoderStatus.OK) {
-        if (results[1]) {
-          autocomplete.set("place", results[1])
-          $('#place').val(results[1].formatted_address);
-          setTimeout(() => $('#place').blur(), 1000);
-        } else {
-          // no results found at current location
-        }
-      } else {
-        // browser did not allow location services
-      }
-    });
-  }
 
   const icon = {
     url: 'https://www.getaround.com/img/icons/map_marker_pin.png',
@@ -142,7 +115,7 @@ $(document).ready(function() {
 
   const initialize = () => {
     geocoder = new google.maps.Geocoder();
-    getLocation();
+    // getLocation();
     getCityViewport();
   }
 
@@ -306,4 +279,23 @@ $(document).ready(function() {
     }, 250);
   });
   initData();
+
+
+    this.getSearchParams = (useMapVP) => {
+      const end_time = `end_time=${moment().format(MOMENT_FORMAT)}`;
+      const start_time = `start_time=${moment().format(MOMENT_FORMAT)}`;
+      const use = 'use=CARSHARE';
+      const viewport = `viewport=${useMapVP ? this.mapViewport : this.viewport}`;
+      return `${start_time}&${end_time}&${use}&${viewport}`;
+    }
+
+    this.redirectToSearch = (e, data) => {
+      e.preventDefault();
+      const mvp = data ? data.mvp : false;
+      const searchParams = this.getSearchParams(mvp);
+      window.location.href = `https://www.getaround.com/search?${searchParams}`;
+    }
+
+    $("#simple-submit-search").on("click", e => this.redirectToSearch(e, {mvp: true}));
+
 });
