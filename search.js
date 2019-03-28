@@ -141,10 +141,8 @@ $(document).ready(function() {
 
   const adjustEndTimeAgainstStart = () => {
     if (start.clone().add(1, 'h').isAfter(end)) {
-      end.set({h: start.hour() + 1, m: start.minutes()})
-    }
-    if (start.day() === 5) { // is friday, so set default start time to 48 hours ahead
-      end.set({D: start.date() + 2, h: start.hour(), m: start.minutes()})
+      end = start.clone().add(1, 'h');
+      setEndDateAndTime(end);
     }
     modifyEndAgainstStart()
   }

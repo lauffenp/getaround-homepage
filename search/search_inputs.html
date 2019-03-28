@@ -3,6 +3,8 @@
   <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
 </head>
 <body>
+  <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.7.2/css/all.css" integrity="sha384-fnmOCqbTlWIlj8LyTjo7mOUStjsKC4pOpQbqyi7RrhN7udi9RwhKkMHpvLbHG9Sr" crossorigin="anonymous">
+
   <link href="https://cdnjs.cloudflare.com/ajax/libs/jqueryui/1.12.1/jquery-ui.css" rel="stylesheet"></link>
   <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/timepicker@1.11.14/jquery.timepicker.min.css"></link>
   <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css"></link>
@@ -318,20 +320,27 @@
     opacity: 1;
   }
 
-  .search-inputs .ui-datepicker .ui-datepicker-prev span, .ui-datepicker .ui-datepicker-next span {
+  .ui-datepicker .ui-datepicker-next span {
     background-image: none !important;
+    height: 100%;
+    top: 30%;
   }
 
-  .search-inputs .ui-datepicker-next span.ui-icon {
-      width: 16x; //this the width of the icon. increase it if your icon is bigger
-      height: 16px;
+  .ui-datepicker .ui-datepicker-prev span {
+    background-image: none !important;
+    height: 100%;
+    top: 30%;
+  }
+
+  .ui-datepicker .ui-datepicker-next span.ui-icon {
+      width: 16x;
       display: block;
       text-indent: 0;
       overflow: hidden;
       background-repeat: no-repeat;
   }
 
-  .search-inputs .ui-datepicker-next span:before {
+  .ui-datepicker .ui-datepicker-next span:before {
     font-family: "Font Awesome 5 Free";
     content: "\f054";
     font-weight: 900;
@@ -340,16 +349,15 @@
     color: #000;
   }
 
-  .search-inputs .ui-datepicker-prev span.ui-icon {
+  .ui-datepicker .ui-datepicker-prev span.ui-icon {
       width: 16x;
-      height: 16px;
       display: block;
       text-indent: 0;
       overflow: hidden;
       background-repeat: no-repeat;
   }
 
-  .search-inputs .ui-datepicker-prev span:before {
+  .ui-datepicker .ui-datepicker-prev span:before {
     font-family: "Font Awesome 5 Free";
     content: "\f053";
     font-weight: 900;
@@ -404,7 +412,7 @@
     integrity="sha256-VazP97ZCwtekAsvgPBSUwPFKdrwD3unUfSGVYrahUqU="
     crossorigin="anonymous"></script>
 
-  <script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyCaHROYjZ3JaEJvX3EZaYHiB2ojmqS3m3M&libraries=places"></script>
+  <script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyAg9mnbS53TwQYFVbJ3RU7MaF21C4cHVfw&libraries=places"></script>
   <!-- moment -->
   <script src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.24.0/moment.js"></script>
   <script src="https://cdn.jsdelivr.net/npm/timepicker@1.11.14/jquery.timepicker.min.js"></script>

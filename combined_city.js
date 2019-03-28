@@ -87,11 +87,6 @@ $(document).ready(function() {
 
   const makeCarApiRequest = (backupUrl) => {
     let url = backupUrl || `https://index.getaround.com/v1.0/search`;
-    const params = {
-      start_time: start.format(MOMENT_FORMAT),
-      end_time: end.format(MOMENT_FORMAT),
-      viewport: this.mapViewport,
-    }
     url = `${url}?product=web&viewport=${this.mapViewport}&use=CARSHARE`;
     fetch(url)
     .then(res => res.json())
@@ -101,8 +96,6 @@ $(document).ready(function() {
       }
     }).catch(() => backupUrl ? console.error() : makeCarApiRequest(`https://index.g3staging.getaround.com/v1.0/search`))
   }
-
-
 
 
   const getCityViewport = () => {
