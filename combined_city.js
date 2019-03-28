@@ -266,18 +266,18 @@ $(document).ready(function() {
   }
 
   $("#load-more").on('click', loadMore);
-  $(window).on('resize', () => {
-    $("#carousel").slick('unslick');
-    const children = $('#carousel').children();
-    let i;
-    for (i = 0; i < children.length; i++) {
-      children[i].remove();
-    }
-    clearTimeout(window.resizedFinished);
-    window.resizedFinished = setTimeout(() => {
-      resize();
-    }, 250);
-  });
+  // $(window).on('resize', () => {
+  //   $("#carousel").slick('unslick');
+  //   const children = $('#carousel').children();
+  //   let i;
+  //   for (i = 0; i < children.length; i++) {
+  //     children[i].remove();
+  //   }
+  //   clearTimeout(window.resizedFinished);
+  //   window.resizedFinished = setTimeout(() => {
+  //     resize();
+  //   }, 250);
+  // });
   initData();
 
 
