@@ -98,6 +98,18 @@ $(document).ready(function() {
     minDate: now.toDate(),
     hideIfNoPrevNext: true,
     dateFormat: 'm/d/y',
+    daysNameMin: [ "Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat" ],
+    nextText: "",
+    prevText: "",
+    beforeShowDay: function(date) {
+      const sel  = moment(date);
+      return [true,
+        (sel.isAfter(start, 'day') && sel.isBefore(end, 'day')) ? "bet-highlight" :
+        (sel.isSame(start, 'day')) && (sel.isSame(end, 'day')) ? 'both-highlight' :
+        (sel.isSame(start, 'day')) ? 'start-highlight' :
+        (sel.isSame(end, 'day')) ? 'end-highlight' : ""
+      ];
+    },
   }
 
   const convertValDateText = valDateText => moment(valDateText, 'M/D/YY').format('MM/DD/YYYY');
@@ -113,6 +125,7 @@ $(document).ready(function() {
     setEndDateAndTime(end);
     setStartDateAndTime(start);
     $( "#start-date" ).blur();
+    setTimeout(() => $( "#end-date" ).datepicker('show'), 100);
   }
 
   const changeEndDate = valDateText => {
@@ -159,11 +172,12 @@ $(document).ready(function() {
     setStartDateAndTime(start);
   }
 
-  $( "#end-date" ).datepicker({...calOpts, onSelect: changeEndDate });
-  $( "#start-date" ).datepicker({ ...calOpts, onSelect: changeStartDate });
   $( "#end-time" ).timepicker(timepickerOptions);
   $( "#start-time" ).timepicker(timepickerOptions);
   $( "#start-time" ).on('change', changeStartTime);
+
+  $( "#end-date" ).datepicker({...calOpts, onSelect: changeEndDate });
+  $( "#start-date" ).datepicker({ ...calOpts, onSelect: changeStartDate });
   initializeDatePickers();
 
   // add default viewport
