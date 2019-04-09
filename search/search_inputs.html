@@ -27,13 +27,6 @@
     border-radius: 0;
   }
 
-  @media only screen
-      and (device-width : 375px)
-      and (device-height : 812px)
-      and (-webkit-device-pixel-ratio : 3) {
-
-      }
-
 
   @media (max-width: 767px) {
     *.search-inputs {
@@ -41,10 +34,16 @@
     }
   }
 
+  .search-inputs input.search-inputs.hasDatepicker:focus {
+    -webkit-box-shadow: 0px 0px 8px 0px rgba(204,51,204,1);
+    -moz-box-shadow: 0px 0px 8px 0px rgba(204,51,204,1);
+    box-shadow: 0px 0px 8px 0px rgba(204,51,204,1);
+  }
+
   .search-inputs input.search-inputs.hasDatepicker {
     text-align: left;
     padding-right: 30px;
-    padding-left: 0;
+    border-radius: 4px;
   }
 
   .search-inputs input.search-inputs.hasDatepicker {
@@ -56,6 +55,11 @@
     right: 0;
   }
 
+  .search-inputs input.ui-timepicker-input:focus {
+    -webkit-box-shadow: 0px 0px 8px 0px rgba(204,51,204,1);
+    -moz-box-shadow: 0px 0px 8px 0px rgba(204,51,204,1);
+    box-shadow: 0px 0px 8px 0px rgba(204,51,204,1);
+  }
   .search-inputs input.ui-timepicker-input {
     width: 89px;
   }
@@ -161,6 +165,12 @@
     -webkit-text-stroke: 1px white;
   }
 
+  @-moz-document url-prefix() {
+  .search-inputs .rt-al-chevron:before {
+    right: 10px;
+  }
+}
+
   /* @media only screen and (device-width : 375px) and (device-height : 812px) and (-webkit-device-pixel-ratio : 3) { */
   @media only screen and (device-width : 375px) and (device-height : 812px) and (-webkit-device-pixel-ratio : 3) {
         .search-inputs .rt-al-chevron:before {
@@ -219,6 +229,21 @@
       margin: 5px auto 0;
       font: Greycliffcf, sans;
       width: 340px;
+      margin-left: -10px;
+  }
+
+  /*position datepicker */
+
+  @media(min-width: 992px) {
+    .ui-datepicker {
+      margin-left: -30px;
+    }
+  }
+
+  @media(min-width: 768px) {
+    .ui-datepicker {
+      margin-left: -18px;
+    }
   }
 
    .ui-datepicker table {

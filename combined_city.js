@@ -271,18 +271,19 @@ $(document).ready(function() {
 
 
     this.getSearchParams = (useMapVP) => {
-      const end_time = `end_time=${moment().format(MOMENT_FORMAT)}`;
-      const start_time = `start_time=${moment().format(MOMENT_FORMAT)}`;
-      const use = 'use=CARSHARE';
-      const viewport = `viewport=${useMapVP ? this.mapViewport : this.viewport}`;
-      return `${start_time}&${end_time}&${use}&${viewport}`;
+      const params = new URLSearchParams();
+      params.set('end_time', end.format(MOMENT_FORMAT));
+      params.set('start_time', end.format(MOMENT_FORMAT));
+      params.set('use', 'CARSHARE');
+      params.set('viewport', useMapVP ? this.mapViewport : this.viewport);
+      return params;
     }
 
     this.redirectToSearch = (e, data) => {
       e.preventDefault();
       const mvp = data ? data.mvp : false;
       const searchParams = this.getSearchParams(mvp);
-      window.location.href = `https://www.getaround.com/search?${searchParams}`;
+      window.location.href = `https://www.getaround.com/search?${searchParams.toString()}`;
     }
 
     $("#simple-submit-search").on("click", e => this.redirectToSearch(e, {mvp: true}));
