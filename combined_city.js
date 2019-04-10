@@ -40,6 +40,7 @@ $(document).ready(function() {
           lat: car.latitude,
           lng: car.longitude,
         },
+        clickable: false,
         icon,
         map: map,
       }));
@@ -272,8 +273,6 @@ $(document).ready(function() {
 
     this.getSearchParams = (useMapVP) => {
       const params = new URLSearchParams();
-      params.set('end_time', end.format(MOMENT_FORMAT));
-      params.set('start_time', end.format(MOMENT_FORMAT));
       params.set('use', 'CARSHARE');
       params.set('viewport', useMapVP ? this.mapViewport : this.viewport);
       return params;
@@ -287,5 +286,5 @@ $(document).ready(function() {
     }
 
     $("#simple-submit-search").on("click", e => this.redirectToSearch(e, {mvp: true}));
-
+    $("#overlay").on("click", e => this.redirectToSearch(e, {mvp: true}));
 });
