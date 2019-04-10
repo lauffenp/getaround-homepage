@@ -177,7 +177,7 @@ $(document).ready(function() {
   }
 
   const fetchItems = ({ num = 8, offset = 0 } = {}) => {
-    fetch(`${apiUrl}/collections/5c1c459d6f08bd4d33d101ac?num=${num}&offset=${offset}`)
+    fetch(`${apiUrl}/collections/5ca580d63640513046cd743e?num=${num}&offset=${offset}`)
     .then(res => res.json())
     .then(data => {
       if (data && data.items) {
@@ -230,7 +230,7 @@ $(document).ready(function() {
   }
 
   const fetchCars = ({ num = 12, offset = 0 } = {}) => {
-    fetch(`${apiUrl}/collections/5c913f3b0b45a005abe59251?num=${num}&offset=${offset}`)
+    fetch(`${apiUrl}/collections/5ca580d6364051d9fecd7443?num=${num}&offset=${offset}`)
     .then(res => res.json())
     .then(data => {
       if (data && data.items) {
