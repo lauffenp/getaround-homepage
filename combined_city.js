@@ -140,18 +140,10 @@ $(document).ready(function() {
   }
 
   this.num = getNum();
-  this.offset = 2 * getNum();
+  this.offset = 0;
   this.reviews = [];
 
   const populateReviewsItem = (newReviews) => {
-    if (this.offset > 19 && newReviews.length) {
-      const children = $('#reviews-wrapper').children();
-      let i = 0;
-      while (i < getNum() && newReviews[i]) {
-        children[i].remove();
-        i++;
-      }
-    }
 
     if (newReviews && newReviews.length) {
       const cards = newReviews.map(review =>
@@ -177,12 +169,18 @@ $(document).ready(function() {
   }
 
   const fetchItems = ({ num = 8, offset = 0 } = {}) => {
-    fetch(`${apiUrl}/collections/5ca580d63640513046cd743e?num=${num}&offset=${offset}`)
+    fetch(`${apiUrl}/collections/5ca580d63640517502cd743d?num=${num}&offset=${offset}`)
     .then(res => res.json())
     .then(data => {
       if (data && data.items) {
-        this.reviews = this.reviews.concat(data.items);
-        populateReviewsItem(data.items);
+        let items = data.items
+        const maxItems = width() <= MD ? 21 : 20;
+        if (items.length + this.reviews.length >= maxItems) {
+          $('#load-more').hide();
+          items = items.slice(0, maxItems-this.reviews.length);
+        }
+        this.reviews = this.reviews.concat(items);
+        populateReviewsItem(items);
       }
     })
     .catch(console.error)
@@ -247,7 +245,7 @@ $(document).ready(function() {
     fetchCars({ num: 12 });
     this.reviews = [];
     fetchItems({ num: this.num * 2 });
-    this.offset = 2 * getNum();
+    this.offset = this.num;
   }
 
   const loadMore = () => {
